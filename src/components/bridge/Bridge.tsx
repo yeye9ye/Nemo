@@ -9,14 +9,9 @@ function Bridge() {
                     <h1>US Bridge Failures</h1>
                     <p>
                         Historical bridge failures since 1800.
-                        Click marks on the map to see more details.
+                        Click marks on the map to see more details summarized by AI.
                     </p>
                     <BridgeMap />
-                    <p className="bridge_data_source"> Data Source:
-                        <a href="https://en.wikipedia.org/wiki/List_of_bridge_failures">
-                            WIKI
-                        </a>
-                    </p>
                 </div>
             </div>
         </section>
