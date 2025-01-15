@@ -1,14 +1,16 @@
 import Header from "./components/header/Header";
-import USMap from "./components/USMap/USMap";
+import Bridge from "./components/bridge/Bridge";
+import Home from "./components/home/Home";
 
 function App() {
-
   return (
-    <main>
+    <>
       <Header />
-      <h1>US Bridge Failures Map</h1>
-      <USMap />
-    </main>
+      <main className="main">
+        <Home />
+        <Bridge />
+      </main>
+    </>
   );
 }
 

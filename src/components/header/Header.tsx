@@ -4,6 +4,7 @@ import "./header.css";
 function Header() {
 
     const [Toggle, showMenu] = useState(false);
+    const [activeNav, setActiveNav] = useState("#home");
 
     return (
     <header className="header">
@@ -14,13 +15,17 @@ function Header() {
                 <ul className="nav_list">
 
                     <li className="nav_item">
-                        <a href="#home" className="nav_link active_link">
+                        <a href="#home"
+                            onClick={() => setActiveNav("#home")}
+                            className={activeNav === "#home" ? "nav_link active_link" : "nav_link"}>
                             <i className="uil uil-estate nav_icon"></i>Home
                         </a>
                     </li>
 
                     <li className="nav_item">
-                        <a href="#contact" className="nav_link">
+                        <a href="#bridge"
+                            onClick={() => setActiveNav("#bridge")}
+                            className={activeNav === "#bridge" ? "nav_link active_link" : "nav_link"}>
                             <i className="uil uil-archway nav_icon"></i>US Bridge Failures
                         </a>
                     </li>
