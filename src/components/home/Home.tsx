@@ -1,5 +1,3 @@
-import BridgeMap from "../bridge/BridgeMap";
-import "../bridge/bridge.css"
 
 function Home() {
     return (
