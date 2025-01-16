@@ -58,8 +58,8 @@ function BridgeMap() {
             ))
           }
         </Geographies>
-        {markers.map((marker, index) => (
-          <Marker key={marker.name} coordinates={marker.coordinates as [number, number]} id={`index`}
+        {markers.map((marker) => (
+          <Marker key={marker.name} coordinates={marker.coordinates as [number, number]} id={marker.name}
             onClick={(e) => {
               handleMarkerClick(marker as Marker, e);
             }}
