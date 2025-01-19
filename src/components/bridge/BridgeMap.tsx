@@ -18,16 +18,19 @@ type Marker = {
   coordinates: [number, number]
 }
 
+let bridges: any[] = [];
+
 const client = getClient();
 
 if (!client) {
   // throw new Error("Client not initialized. Call initClient() first!");
   console.log("Client not initialized. Call initClient() first!");
+} else {
+  const { data: bridge_info } = await client.models.Bridge.list({
+    authMode: 'apiKey',
+  });
+  bridges = bridge_info;
 }
-
-const { data: bridges } = await client.models.Bridge.list({
-  authMode: 'apiKey',
-});
 
 const markers = bridges.map((bridge) => {
   return {
