@@ -5,7 +5,7 @@ const schema = a.schema({
       name: a.string().required().default("UNKNOWN"),
       latitude: a.float().required().default(0.0),
       longitude: a.float().required().default(0.0),
-      details: a.hasOne("Details", "bridgeId").required(),
+      details: a.hasOne("Details", "bridgeId"),
     }).authorization((allow) => [allow.publicApiKey()]),
   Details: a.model({
       bridge: a.belongsTo("Bridge", "bridgeId"),
