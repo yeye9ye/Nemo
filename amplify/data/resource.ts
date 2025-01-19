@@ -5,11 +5,11 @@ const schema = a.schema({
       name: a.string().required().default("UNKNOWN"),
       latitude: a.float().required().default(0.0),
       longitude: a.float().required().default(0.0),
-      details: a.hasOne("Details", "bridgeId"),
+      details: a.hasOne("Details", "bridgeId").required(),
     }).authorization((allow) => [allow.publicApiKey()]),
   Details: a.model({
       bridge: a.belongsTo("Bridge", "bridgeId"),
-      bridgeId: a.id(),
+      bridgeId: a.id().required().default("UNKNOWN"),
       city: a.string().required().default("UNKNOWN"),
       state: a.string().required().default("UNKNOWN"),
       date: a.date().required().default("1989-04-20"),
