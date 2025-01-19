@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ComposableMap,
   Geographies,
   Geography,
   Marker
 } from 'react-simple-maps';
-import { getClient } from '../../Client';
+import { getClient, initClient } from '../../Client';
 import { Schema } from '../../../amplify/data/resource';
 
 const usGeoUrl = 'https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json';
 
 const MARKER_DEFAULT_OFFSET = -25;
+
+type Bridge = Schema['Bridge']['type'];
 
 type Marker = {
   markerOffset: number;
@@ -19,38 +21,36 @@ type Marker = {
   coordinates: [number, number]
 }
 
-type Bridge = Schema['Bridge']['type'];
-
-let bridges: Bridge[] = [];
-
-const client = getClient();
-
-async function getBridges() {
-  if (!client) {
-    // throw new Error("Client not initialized. Call initClient() first!");
-    console.log("Client not initialized. Call initClient() first!");
-  } else {
-    const {data: bridge_info} = await client.models.Bridge.list();
-    bridges = bridge_info;
-  }
-}
-
-getBridges();
-
-const markers = bridges.map((bridge) => {
-  return {
-    markerOffset: MARKER_DEFAULT_OFFSET,
-    name: bridge.name,
-    id: bridge.id,
-    coordinates: [bridge.longitude, bridge.latitude],
-  }
-});
 
 function BridgeMap() {
   const [selectedMarker, setSelectedMarker] = useState<Marker | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [tooltipData, setTooltipData] = useState<string | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [bridges, setBridges] = useState<Bridge[]>([]);
+
+  const client = getClient();
+  const fetchBridges = async () => {
+    if (!client) {
+      initClient();
+    } else {
+      const { data: bridge_info } = await client.models.Bridge.list();
+      setBridges(bridge_info);
+    }
+  };
+
+  useEffect(() => {
+    fetchBridges();
+  });
+
+  const markers = bridges.map((bridge) => {
+    return {
+      markerOffset: MARKER_DEFAULT_OFFSET,
+      name: bridge.name,
+      id: bridge.id,
+      coordinates: [bridge.longitude, bridge.latitude],
+    }
+  });
 
   const handleMarkerClick = async (marker: Marker, event: React.MouseEvent<SVGGElement, MouseEvent>) => {
     event.stopPropagation();
