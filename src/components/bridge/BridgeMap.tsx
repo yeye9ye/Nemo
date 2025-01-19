@@ -21,7 +21,8 @@ type Marker = {
 const client = getClient();
 
 if (!client) {
-  throw new Error("Client not initialized. Call initClient() first!");
+  // throw new Error("Client not initialized. Call initClient() first!");
+  console.log("Client not initialized. Call initClient() first!");
 }
 
 const { data: bridges } = await client.models.Bridge.list({
