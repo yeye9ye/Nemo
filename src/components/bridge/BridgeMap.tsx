@@ -5,23 +5,37 @@ import {
   Geography,
   Marker
 } from 'react-simple-maps';
+import { getClient } from '../../Client';
 
 const usGeoUrl = 'https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json';
+
+const MARKER_DEFAULT_OFFSET = -25;
 
 type Marker = {
   markerOffset: number;
   name: string;
+  id: string;
   coordinates: [number, number]
 }
 
-const markers = [
-  { markerOffset: -30, name: "Chicago", coordinates: [-87.6298, 41.8781] },
-  { markerOffset: -30, name: "Boston", coordinates: [-71.0589, 42.3601] },
-  { markerOffset: -30, name: "Tulsa", coordinates: [-95.9928, 36.154] },
-  { markerOffset: -30, name: "Baltimore", coordinates: [-76.6122, 39.2904] },
-  { markerOffset: -30, name: "Miami", coordinates: [-80.1918, 25.7617] },
-  { markerOffset: -30, name: "Los Angeles", coordinates: [-118.2426, 34.0549] },
-];
+const client = getClient();
+
+if (!client) {
+  throw new Error("Client not initialized. Call initClient() first!");
+}
+
+const { data: bridges } = await client.models.Bridge.list({
+  authMode: 'apiKey',
+});
+
+const markers = bridges.map((bridge) => {
+  return {
+    markerOffset: MARKER_DEFAULT_OFFSET,
+    name: bridge.name,
+    id: bridge.id,
+    coordinates: [bridge.longitude, bridge.latitude],
+  }
+});
 
 function BridgeMap() {
   const [selectedMarker, setSelectedMarker] = useState<Marker | null>(null);
@@ -59,8 +73,11 @@ function BridgeMap() {
           }
         </Geographies>
         {markers.map((marker) => (
-          <Marker key={marker.name} coordinates={marker.coordinates as [number, number]} id={marker.name}
+          <Marker key={marker.name} coordinates={marker.coordinates as [number, number]} id={marker.id}
             onClick={(e) => {
+              console.log(marker.id);
+              console.log(marker.name);
+              console.log(marker.coordinates);
               handleMarkerClick(marker as Marker, e);
             }}
           >
