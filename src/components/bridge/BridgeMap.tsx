@@ -26,9 +26,7 @@ if (!client) {
   // throw new Error("Client not initialized. Call initClient() first!");
   console.log("Client not initialized. Call initClient() first!");
 } else {
-  const { data: bridge_info } = await client.models.Bridge.list({
-    authMode: 'apiKey',
-  });
+  const { data: bridge_info } = await client.models.Bridge.list({});
   bridges = bridge_info;
 }
 
