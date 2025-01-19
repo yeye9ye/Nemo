@@ -39,6 +39,20 @@ function BridgeMap() {
     }
   };
 
+  async function fetchDetails(id: string) {
+    if (!client) {
+      initClient();
+      return fetchDetails(id);
+    } else {
+      const { data: fetchedDetails } = await client.models.Details.list({
+        filter: {
+          bridgeId: { eq: id }
+        }
+      });
+      return fetchedDetails;
+    }
+  }
+
   useEffect(() => {
     fetchBridges();
   });
@@ -54,16 +68,23 @@ function BridgeMap() {
 
   const handleMarkerClick = async (marker: Marker, event: React.MouseEvent<SVGGElement, MouseEvent>) => {
     event.stopPropagation();
-    setShowTooltip(true);
-    setSelectedMarker(marker);
-    setTooltipData(`Hey I'm the bridge of ${marker.name}`);
-    const { clientX, clientY } = event;
-    setTooltipPosition({ x: clientX, y: clientY });
+    const fetchedDetails = await fetchDetails(marker.id);
+    console.log(fetchedDetails);
+    if (fetchedDetails[0]) {
+      setSelectedMarker(marker);
+      setTooltipData(fetchedDetails[0].reason);
+      const { clientX, clientY } = event;
+      setTooltipPosition({ x: clientX, y: clientY });
+      setShowTooltip(true);
+    } else {
+      handleMarkerClick(marker, event);
+    }
   };
 
   const hideTooltip = () => {
     // click on the map background to hide the tooltip
     setShowTooltip(false);
+    setTooltipData(""); // clean data to avoid wrong details on next click
   };
 
   return (
@@ -84,9 +105,6 @@ function BridgeMap() {
         {markers.map((marker) => (
           <Marker key={marker.name} coordinates={marker.coordinates as [number, number]} id={marker.id}
             onClick={(e) => {
-              console.log(marker.id);
-              console.log(marker.name);
-              console.log(marker.coordinates);
               handleMarkerClick(marker as Marker, e);
             }}
           >
