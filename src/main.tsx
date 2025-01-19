@@ -6,9 +6,9 @@ import { Amplify } from "aws-amplify";
 import outputs from "../amplify_outputs.json";
 import { initClient } from "./Client.ts";
 
-await Amplify.configure(outputs);
+Amplify.configure(outputs);
 
-await initClient()
+initClient()
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
