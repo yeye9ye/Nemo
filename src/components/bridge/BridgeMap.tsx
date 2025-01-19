@@ -25,7 +25,9 @@ type Marker = {
 function BridgeMap() {
   const [selectedMarker, setSelectedMarker] = useState<Marker | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
-  const [tooltipData, setTooltipData] = useState<string | null>(null);
+  const [tooltipBridgeLocation, setTooltipBridgeLocation] = useState<string | null>(null);
+  const [tooltipBridgeDate, setTooltipBridgeDate] = useState<string | null>(null);
+  const [tooltipBridgeReason, setTooltipBridgeReason] = useState<string | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
   const [bridges, setBridges] = useState<Bridge[]>([]);
 
@@ -72,7 +74,9 @@ function BridgeMap() {
     console.log(fetchedDetails);
     if (fetchedDetails[0]) {
       setSelectedMarker(marker);
-      setTooltipData(fetchedDetails[0].reason);
+      setTooltipBridgeLocation(`Location: ${fetchedDetails[0].city}, ${fetchedDetails[0].state}`);
+      setTooltipBridgeDate(`Failure Date: ${fetchedDetails[0].date}`);
+      setTooltipBridgeReason(`Reason: ${fetchedDetails[0].reason}`);
       const { clientX, clientY } = event;
       setTooltipPosition({ x: clientX, y: clientY });
       setShowTooltip(true);
@@ -84,7 +88,9 @@ function BridgeMap() {
   const hideTooltip = () => {
     // click on the map background to hide the tooltip
     setShowTooltip(false);
-    setTooltipData(""); // clean data to avoid wrong details on next click
+    setTooltipBridgeReason(null); // clean data to avoid wrong details on next click
+    setTooltipBridgeLocation(null); // clean data to avoid wrong details on next click
+    setTooltipBridgeDate(null); // clean data to avoid wrong details on next click
   };
 
   return (
@@ -129,13 +135,14 @@ function BridgeMap() {
           </Marker>
         ))}
       </ComposableMap>
-      {selectedMarker && tooltipData && showTooltip && (
+      {selectedMarker && tooltipBridgeReason && showTooltip && (
         <div
           style={{
             position: "absolute",
-            top: `${tooltipPosition.y + 440}px`,
+            top: `${tooltipPosition.y + 350}px`,
             left: `${tooltipPosition.x - 120}px`,
             background: "#fff",
+            width: "480px",
             border: "1px solid #ccc",
             padding: "10px",
             borderRadius: "5px",
@@ -143,7 +150,9 @@ function BridgeMap() {
           }}
         >
           <h4>{selectedMarker.name}</h4>
-          <p>{tooltipData}</p>
+          <p>{tooltipBridgeLocation}</p>
+          <p>{tooltipBridgeDate}</p>
+          <p>{tooltipBridgeReason}</p>
         </div>
       )}
     </div>
