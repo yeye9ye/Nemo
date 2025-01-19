@@ -6,6 +6,7 @@ import {
   Marker
 } from 'react-simple-maps';
 import { getClient } from '../../Client';
+import { Schema } from '../../../amplify/data/resource';
 
 const usGeoUrl = 'https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json';
 
@@ -18,17 +19,23 @@ type Marker = {
   coordinates: [number, number]
 }
 
-let bridges: any[] = [];
+type Bridge = Schema['Bridge']['type'];
+
+let bridges: Bridge[] = [];
 
 const client = getClient();
 
-if (!client) {
-  // throw new Error("Client not initialized. Call initClient() first!");
-  console.log("Client not initialized. Call initClient() first!");
-} else {
-  const { data: bridge_info } = await client.models.Bridge.list({});
-  bridges = bridge_info;
+async function getBridges() {
+  if (!client) {
+    // throw new Error("Client not initialized. Call initClient() first!");
+    console.log("Client not initialized. Call initClient() first!");
+  } else {
+    const {data: bridge_info} = await client.models.Bridge.list();
+    bridges = bridge_info;
+  }
 }
+
+getBridges();
 
 const markers = bridges.map((bridge) => {
   return {
